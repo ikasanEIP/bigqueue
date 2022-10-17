@@ -1,5 +1,8 @@
 # Big Queue
 
+***PLEASE NOTE***
+
+This is a fork from the original project https://github.com/ikasanEIP/bigqueue as it has not been touched since 2016.
 
 A big, fast and persistent queue based on memory mapped file.
 
@@ -64,6 +67,9 @@ Download jar from repository mentioned in version history section below, latest 
 9. [a big, fast and persistent queue[ppt]](http://www.slideshare.net/yang75108/a-big-fast-and-persistent-queue)
 
 ## Version History
+
+#### 1.0.0 - :
+TBC 
 
 #### 0.7.0 - *March 24, 2013* : [repository](https://github.com/bulldog2011/bulldog-repo/tree/master/repo/releases/com/leansoft/bigqueue/0.7.0)
   * Feature: support fanout queue semantics
