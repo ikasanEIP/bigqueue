@@ -43,16 +43,10 @@ Download jar from repository mentioned in version history section below, latest 
 2. Maven reference  
 
 		<dependency>
-		  <groupId>com.leansoft</groupId>
+		  <groupId>org.ikasan</groupId>
 		  <artifactId>bigqueue</artifactId>
-          <version>0.7.0</version>
+          <version>1.0.0</version>
 		</dependency>
-		
-		<repository>
-		  <id>github.release.repo</id>
-		  <url>https://raw.github.com/bulldog2011/bulldog-repo/master/repo/releases/</url>
-		</repository>
-
 
 ##Docs
 
@@ -69,7 +63,10 @@ Download jar from repository mentioned in version history section below, latest 
 ## Version History
 
 #### 1.0.0 - :
-TBC 
+  * Rename packages
+  * Fix MappedByteBuffer release 
+  * Fix BigQueueImpl applyForEach iterator when gc() is called
+  * Fix BigQueueImpl for removeAll() IndexOutOfBoundException 
 
 #### 0.7.0 - *March 24, 2013* : [repository](https://github.com/bulldog2011/bulldog-repo/tree/master/repo/releases/com/leansoft/bigqueue/0.7.0)
   * Feature: support fanout queue semantics

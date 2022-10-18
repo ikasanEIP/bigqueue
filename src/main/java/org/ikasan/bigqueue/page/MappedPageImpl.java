@@ -2,12 +2,13 @@ package org.ikasan.bigqueue.page;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.misc.Unsafe;
 
 public class MappedPageImpl implements IMappedPage, Closeable {
 	
@@ -81,45 +82,37 @@ public class MappedPageImpl implements IMappedPage, Closeable {
 	{
 		Cleaner.clean(buffer);
 	}
-	
-    /**
-     * Helper class allowing to clean direct buffers.
-     */
-    private static class Cleaner {
-        public static final boolean CLEAN_SUPPORTED;
-        private static final Method directBufferCleaner;
-        private static final Method directBufferCleanerClean;
 
-        static {
-            Method directBufferCleanerX = null;
-            Method directBufferCleanerCleanX = null;
-            boolean v;
-            try {
-                directBufferCleanerX = Class.forName("java.nio.DirectByteBuffer").getMethod("cleaner");
-                directBufferCleanerX.setAccessible(true);
-                directBufferCleanerCleanX = Class.forName("sun.misc.Cleaner").getMethod("clean");
-                directBufferCleanerCleanX.setAccessible(true);
-                v = true;
-            } catch (Exception e) {
-                v = false;
-            }
-            CLEAN_SUPPORTED = v;
-            directBufferCleaner = directBufferCleanerX;
-            directBufferCleanerClean = directBufferCleanerCleanX;
-        }
+	/**
+	 * Helper class allowing to clean direct buffers.
+	 */
+	private static class Cleaner {
+		private static Unsafe unsafe;
 
-        public static void clean(ByteBuffer buffer) {
-    		if (buffer == null) return;
-            if (CLEAN_SUPPORTED && buffer.isDirect()) {
-                try {
-                    Object cleaner = directBufferCleaner.invoke(buffer);
-                    directBufferCleanerClean.invoke(cleaner);
-                } catch (Exception e) {
-                    // silently ignore exception
-                }
-            }
-        }
-    }
+		static {
+			try {
+				Field f = Unsafe.class.getDeclaredField("theUnsafe");
+				f.setAccessible(true);
+				unsafe = (Unsafe) f.get(null);
+			} catch (Exception e) {
+				logger.warn("Unsafe Not support {}", e.getMessage(), e);
+			}
+		}
+
+		public static void clean(ByteBuffer buffer) {
+			try {
+				if(unsafe != null) {
+					unsafe.invokeCleaner(buffer);
+				}
+				else {
+					logger.warn("Unable to clean the byte buffer!");
+				}
+			}
+			catch (Exception e) {
+				logger.error("Error occurred when cleaning the byte buffer! {}", e.getMessage(), e);
+			}
+		}
+	}
     
     private static class ThreadLocalByteBuffer extends ThreadLocal<ByteBuffer> {
     	private ByteBuffer _src;

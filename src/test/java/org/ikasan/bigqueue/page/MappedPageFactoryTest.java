@@ -131,6 +131,7 @@ public class MappedPageFactoryTest {
 		mappedPageFactory.deleteAllPages();
 		
 		start = System.currentTimeMillis();
+		TestUtil.sleepQuietly(5000); // 5 seconds so that start time is less than iPageFileLastModifiedTime
 		for(int i = 0; i <= 100; i++) {
 			IMappedPage mappedPageI = mappedPageFactory.acquirePage(i);
 			mappedPageI.getLocal(0).put(("hello " + i).getBytes());
@@ -143,8 +144,6 @@ public class MappedPageFactoryTest {
 			
 			long index = mappedPageFactory.getFirstPageIndexBefore(currentTime + 1);
 			assertTrue(index == i);
-			
-			start = currentTime;
 		}
 		
 		mappedPageFactory.deleteAllPages();
