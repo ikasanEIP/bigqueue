@@ -2,7 +2,7 @@
 
 ***PLEASE NOTE***
 
-This is a fork from the original project https://github.com/ikasanEIP/bigqueue as it has not been touched since 2016.
+This is a fork from the original project https://github.com/bulldog2011/bigqueue as it has not been maintained since 2016.
 
 A big, fast and persistent queue based on memory mapped file.
 
