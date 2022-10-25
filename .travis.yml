@@ -2,8 +2,6 @@ sudo: false
 language: java
 jdk:
    - openjdk11
-node_js:
-  - 10.17.0
 cache:
   directories:
   - $HOME/.m2
@@ -12,7 +10,6 @@ before_install:
 #  - echo -e "machine github.com\n  login $GITHUB_USER\n  password $GITHUB_PASSWORD" > $HOME/.netrc
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
-  - nvm install 10.17.0
 
 install:
   - mvn -U  --file pom.xml --settings .settings.xml test -Dmaven.javadoc.skip=true -Djava.security.egd=file:/dev/./urandom -Pall -B -V
