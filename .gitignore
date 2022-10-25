@@ -2,3 +2,14 @@
 /.settings
 /.classpath
 /.project
+*.iml
+.idea
+.DS_Store
+**/target
+**/.settings
+**/.classpath
+**/.project
+target
+.project
+.classpath
+.settings
