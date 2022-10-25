@@ -10,23 +10,23 @@ cache:
 ## export GPG details
 before_install:
 #  - echo -e "machine github.com\n  login $GITHUB_USER\n  password $GITHUB_PASSWORD" > $HOME/.netrc
-#  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
-#  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
   - nvm install 10.17.0
 
 install:
   - mvn -U  --file pom.xml --settings .settings.xml test -Dmaven.javadoc.skip=true -Djava.security.egd=file:/dev/./urandom -Pall -B -V
 
-#deploy:
-  # deploy develop 3.1.x to oss
-  #- provider: script
-  #  script: mvn --file ikasaneip/pom.xml deploy -DskipTests=true -Djava.security.egd=file:/dev/./urandom -Pall -B  -V --settings .settings.xml
-  #  on:
-  #    branch: 3.2.x
+deploy:
+  # deploy develop 1.0.x to oss
+  - provider: script
+    script: mvn --file pom.xml deploy -DskipTests=true -Djava.security.egd=file:/dev/./urandom -Pall -B  -V --settings .settings.xml
+    on:
+      branch: 1.0.x
 
   # Push release to oss
-  #- provider: script
-  #  script: mvn --file ikasaneip/pom.xml deploy -DskipTests=true -Djava.security.egd=file:/dev/./urandom -Pall,release-sign-artifacts -B  -V --settings .settings.xml
-  #  on:
-  #    tags: true
+  - provider: script
+    script: mvn --file pom.xml deploy -DskipTests=true -Djava.security.egd=file:/dev/./urandom -Pall,release-sign-artifacts -B  -V --settings .settings.xml
+    on:
+      tags: true
 
