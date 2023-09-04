@@ -17,13 +17,15 @@ install:
 deploy:
   # deploy develop 1.0.x to oss
   - provider: script
-    script: mvn --file pom.xml deploy -DskipTests=true -Djava.security.egd=file:/dev/./urandom -Pall -B  -V --settings .settings.xml
+    skip_cleanup: true
+    script: mvn --file pom.xml deploy -DskipTests=true -Djava.security.egd=file:/dev/./urandom -B  -V --settings .settings.xml
     on:
       branch: 1.0.x
 
   # Push release to oss
   - provider: script
-    script: mvn --file pom.xml deploy -DskipTests=true -Djava.security.egd=file:/dev/./urandom -Pall,release-sign-artifacts -B  -V --settings .settings.xml
+    skip_cleanup: true
+    script: mvn --file pom.xml deploy -DskipTests=true -Djava.security.egd=file:/dev/./urandom -Prelease-sign-artifacts -B  -V --settings .settings.xml
     on:
       tags: true
 
