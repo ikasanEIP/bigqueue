@@ -11,6 +11,9 @@ import com.google.common.util.concurrent.SettableFuture;
 import org.ikasan.bigqueue.page.IMappedPage;
 import org.ikasan.bigqueue.page.IMappedPageFactory;
 import org.ikasan.bigqueue.page.MappedPageFactoryImpl;
+import org.ikasan.bigqueue.page.MappedPageImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -26,6 +29,8 @@ import org.ikasan.bigqueue.page.MappedPageFactoryImpl;
  * @author bulldog
  */
 public class BigQueueImpl implements IBigQueue {
+
+    private final static Logger logger = LoggerFactory.getLogger(BigQueueImpl.class);
 
     final IBigArray innerArray;
 
@@ -160,6 +165,7 @@ public class BigQueueImpl implements IBigQueue {
     @Override
     public byte[] peek() throws IOException {
         if (this.isEmpty()) {
+            logger.debug("peek is returning null!");
             return null;
         }
         byte[] data = this.innerArray.get(this.queueFrontIndex.get());
@@ -260,11 +266,18 @@ public class BigQueueImpl implements IBigQueue {
      * Completes the dequeue future
      */
     private void completeFutures() {
+        logger.debug("completeFutures");
+
         synchronized (futureLock) {
+            logger.debug("peekFuture == " + peekFuture);
+            if(peekFuture != null)logger.debug("peekFuture.isDone() == "
+                    + peekFuture.isDone());
             if (peekFuture != null && !peekFuture.isDone()) {
                 try {
+                    logger.debug("setting future: " + this.peek());
                     peekFuture.set(this.peek());
                 } catch (IOException e) {
+                    logger.debug("caught exception trying to set future!", e);
                     peekFuture.setException(e);
                 }
             }
@@ -300,14 +313,21 @@ public class BigQueueImpl implements IBigQueue {
      * Initializes the futures if it's null at the moment
      */
     private void initializePeekFutureIfNecessary() {
+        logger.debug("initializePeekFutureIfNecessary");
         synchronized (futureLock) {
+            logger.debug("peekFuture == " + peekFuture);
+            if(peekFuture != null)logger.debug("peekFuture.isDone() == "
+                    + peekFuture.isDone());
+
             if (peekFuture == null || peekFuture.isDone()) {
                 peekFuture = SettableFuture.create();
             }
             if (!this.isEmpty()) {
                 try {
+                    logger.debug("big queue is not empty so setting future: " + this.peek());
                     peekFuture.set(this.peek());
                 } catch (IOException e) {
+                    logger.debug("caught exception trying to set future!", e);
                     peekFuture.setException(e);
                 }
             }
